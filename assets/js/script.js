@@ -31,13 +31,14 @@ var loadTasks = function() {
     };
   }
 
-  // loop over object properties
-  $.each(tasks, function(list, arr) {
-       // then loop over sub-array
-    arr.forEach(function(task) {
-      createTask(task.text, task.date, list);
-    });
+ // loop over object properties
+ $.each(tasks, function(list, arr) {
+  console.log(list, arr);
+  // then loop over sub-array
+  arr.forEach(function(task) {
+    createTask(task.text, task.date, list);
   });
+});
 };
 
 var saveTasks = function() {
@@ -93,7 +94,7 @@ $('.list-group').on('click', 'span', function(){
     .trim()
 
   //create new date input
-  var dateInput = ('<input>')
+  var dateInput = $('<input>')
     .attr('type', 'text')  //what is this?
     .addClass('form-control')
     .val(date);
@@ -113,12 +114,11 @@ $(".list-group").on("blur", "input[type='text']", function(){
     .val()
     .trim()
 
-  //get parent ul id attribute
+ // get the parent ul's id attribute
   var status = $(this)
-    .closest('list-group')
-    .attr(id)
-    .replace("list-", "")  //what is this?
-
+  .closest(".list-group")
+  .attr("id")             //what is this
+  .replace("list-", "");  //what is this
 
   //get the task's position in the list of other li elements
   var index = $(this)
