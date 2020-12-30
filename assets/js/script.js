@@ -19,7 +19,7 @@ var createTask = function(taskText, taskDate, taskList) {
 };
 
 var loadTasks = function() {
-  tasks = JSON.parse(localStorage.getItem("tasks"));
+  tasks = JSON.parse(localStorage.getItem("tasks"));  //'tasks" is storage label
 
   // if nothing in localStorage, create a new object to track all task status arrays
   if (!tasks) {
@@ -33,8 +33,7 @@ var loadTasks = function() {
 
   // loop over object properties
   $.each(tasks, function(list, arr) {
-    console.log(list, arr);
-    // then loop over sub-array
+       // then loop over sub-array
     arr.forEach(function(task) {
       createTask(task.text, task.date, list);
     });
@@ -45,10 +44,48 @@ var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
+//this is event listener for the <p> which contains the task text
+$('.list-group').on('click', 'p', function(){
+  var text = $(this).text();
+  var textInput = $('<textarea>')
+  .addClass('form-control')
+  .val(text);
+  $(this).replaceWith(textInput);
+  textInput.trigger('focus');
+});
+
+$('.list-group').on('blur', 'textarea', function(){
+  // get the textarea's current value/text
+var text = $(this)
+.val()
+.trim();
+
+// get the parent ul's id attribute
+var status = $(this)
+.closest(".list-group")
+.attr("id")
+.replace("list-", "");
+
+// get the task's position in the list of other li elements
+var index = $(this)
+.closest(".list-group-item")
+.index();
+
+tasks[status][index].text=text;
+saveTasks()
+
+// recreate p element
+var taskP = $("<p>")
+  .addClass("m-1")
+  .text(text);
+
+// replace textarea with p element
+$(this).replaceWith(taskP);
+});
 
 
 
-// modal was triggered
+// modal was triggered  modal is the popup window to add the task
 $("#task-form-modal").on("show.bs.modal", function() {
   // clear values
   $("#modalTaskDescription, #modalDueDate").val("");
@@ -78,7 +115,7 @@ $("#task-form-modal .btn-primary").click(function() {
       date: taskDate
     });
 
-    saveTasks();
+    saveTasks();  //this will run var saveTasks function above
   }
 });
 
