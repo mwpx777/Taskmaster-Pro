@@ -117,8 +117,8 @@ $(".list-group").on("blur", "input[type='text']", function(){
  // get the parent ul's id attribute
   var status = $(this)
   .closest(".list-group")
-  .attr("id")             //what is this
-  .replace("list-", "");  //what is this
+  .attr("id")             //what is this?
+  .replace("list-", "");  //what is this?
 
   //get the task's position in the list of other li elements
   var index = $(this)
