@@ -86,6 +86,87 @@ $('.list-group').on('click', 'p', function(){
   });
 
 
+//drag and drop function tasks  takes class=Card and class=list-group from HTML
+//sortable allows the card item to be sorted into a new group with list-group element
+$(".card .list-group").sortable({
+  // enable dragging across lists
+  connectWith: $(".card .list-group"),
+  scroll: false,
+  tolerance: "pointer",
+  helper: "clone",
+  activate: function(event, ui) {
+    console.log(ui);
+  },
+  deactivate: function(event, ui) {
+    console.log(ui);
+  },
+  over: function(event) {
+    console.log(event);
+  },
+  out: function(event) {
+    console.log(event);
+  },
+  update: function() {
+    var tempArr = [];
+
+    // loop over current set of children in sortable list
+    //var tempArr above will get these values passed into its array
+    $(this)
+      .children()
+      .each(function() {
+        // this will take the tempArr values and push them into var tempArr array above
+        tempArr.push({
+          //will find <p> and take text entered in 
+          text: $(this)
+            .find("p")
+            .text()
+            .trim(),
+          //will find <span> and take text entered in 
+          date: $(this)
+            .find("span")
+            .text()
+            .trim()
+        });
+      });
+
+    // trim down list's ID to match object property   //EXPLAIN THIS
+    var arrName = $(this)
+      .attr("id")
+      .replace("list-", "");
+
+    // update array on tasks object and save
+    tasks[arrName] = tempArr;
+    saveTasks();
+  },
+  stop: function(event) {
+    $(this).removeClass("dropover");
+  }
+});
+
+// this function will allow task to be deleted by dragging to delete dropzone
+$("#trash").droppable({
+  accept: ".card .list-group-item",
+  tolerance: "touch",
+
+  //event is the task, ui is the draggable element
+  drop: function(event, ui) {
+    // remove dragged element from the dom
+    ui.draggable.remove();
+
+  },
+  over: function(event, ui) {
+    console.log(ui);
+  },
+  out: function(event, ui) {
+    console.log(ui);
+  }
+});
+
+
+
+
+
+
 //duedate was clicked
 $('.list-group').on('click', 'span', function(){
   //get current text
