@@ -162,12 +162,8 @@ $("#trash").droppable({
   }
 });
 
-
-
-
-
-
 //duedate was clicked
+//this is the event listener, if 'list-group' 'span' was clicked, run the function
 $('.list-group').on('click', 'span', function(){
   //get current text
   var date = $(this)
@@ -176,19 +172,29 @@ $('.list-group').on('click', 'span', function(){
 
   //create new date input
   var dateInput = $('<input>')
-    .attr('type', 'text')  //what is this?
+    .attr('type', 'text')                       //what is this?
     .addClass('form-control')
     .val(date);
 
   //swap out the elements
   $(this).replaceWith(dateInput);
 
+  //enable jquery ui datepicker
+  dateInput.datepicker({
+    minDate: 1,
+    onClose:function(){
+      //when calendar is closed, this will force a 'change' event on the 'dateInput'
+      //this will change dateInput to whatever was selected when window is closed
+      $(this).trigger('change');
+    }
+  });
+
   //automatically focus on new element
   dateInput.trigger('focus');
 });
 
 //value of due date was edited
-$(".list-group").on("blur", "input[type='text']", function(){
+$(".list-group").on("change", "input[type='text']", function(){
 
   //get current text
   var date= $(this)
@@ -265,6 +271,11 @@ $("#remove-tasks").on("click", function() {
     $("#list-" + key).empty();
   }
   saveTasks();
+});
+
+//modal due date calendar
+$('#modalDueDate').datepicker({
+  minDate: 1
 });
 
 // load tasks for the first time
