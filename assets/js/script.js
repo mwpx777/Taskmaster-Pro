@@ -3,15 +3,20 @@ var tasks = {};
 var createTask = function(taskText, taskDate, taskList) {
   // create elements that make up a task item
   var taskLi = $("<li>").addClass("list-group-item");
+
   var taskSpan = $("<span>")
     .addClass("badge badge-primary badge-pill")
     .text(taskDate);
+
   var taskP = $("<p>")
     .addClass("m-1")
     .text(taskText);
 
-  // append span and p element to parent li
+  // append span and p element to parent var taskLi
   taskLi.append(taskSpan, taskP);
+
+  //check due date by running auditTask function and passing it taskLi argument
+  auditTask(taskLi);
 
 
   // append to ul list on the page
@@ -223,9 +228,10 @@ $(".list-group").on("change", "input[type='text']", function(){
 
   //replace input with span element
   $(this).replaceWith(taskSpan);
+
+  //pass task's <li> element into auditTask() to check new due date
+  auditTask($(taskSpan).closest('.list-group-item'));
   
-
-
 });
 
 
@@ -277,6 +283,39 @@ $("#remove-tasks").on("click", function() {
 $('#modalDueDate').datepicker({
   minDate: 1
 });
+
+
+//this function will change background color based on task due date
+//taskEl is the argument that was passed to this function from auditTasks(taskLi)
+var auditTask = function(taskEl){
+  //get date from task element
+  //this is looking at the auditTask(taskLi) info that was passed to taskEl
+  //it will find the 'span' .text info which is the date
+  var date= $(taskEl).find('span').text().trim();
+  //check to see if this worked
+  console.log(date);
+
+  //convert to moment object at 5:00pm
+  var time = moment(date, 'L').set('hour', 17);
+  //this should print out an object for the value of the date variable
+  console.log(time);
+
+  //remove any existing classes from the element
+  $(taskEl).removeClass('list-group-item-warning list-group-item danger');
+
+  //apply new class based on due date
+  //this if statement is a query method in Moment.js it is a true/false statement
+  //moment() will get current time and compare it to (time)
+  if(moment().isAfter(time)){
+    $(taskEl).addClass('list-group-item-danger')
+  }
+  //Math.abs will check if the moment is .diff than time, days by 2 days
+  //this will compare negative number to <=2
+  //this is a negative number because we are counting up to an event, so the event is zero and the numbers we are counting up to the event are negative numbers
+  else if(Math.abs(moment().diff(time, 'days')) <= 2) {
+    $(taskEl).addClass('list-group-item-warning')
+  }
+};
 
 // load tasks for the first time
 loadTasks();
