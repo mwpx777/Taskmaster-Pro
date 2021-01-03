@@ -317,6 +317,14 @@ var auditTask = function(taskEl){
   }
 };
 
+//this function will run auditTask(el)every 30 min to update task due date background color
+setInterval(function () {
+  $(".card .list-group-item").each(function(index, el) {
+    auditTask(el);
+    console.log(taskEl);
+  });
+}, 1800000);
+
 // load tasks for the first time
 loadTasks();
 
